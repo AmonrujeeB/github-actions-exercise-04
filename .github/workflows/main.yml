@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node application
 
 on:
   push:
@@ -8,14 +8,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
-
-        
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -26,7 +22,20 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-  deploy: 
+
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - name: Hello world action step
+        id: hello
+        uses: actions/hello-world-docker-action@v1
+        with:
+          who-to-greet: 'Mona the Octocat'
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
+
+  deploy: #Job deploy จะทำงานได้ก็ต่อเมื่อ job build ทำงานเสร็จแล้ว 
     needs: build
     runs-on: ubuntu-latest
     steps:
